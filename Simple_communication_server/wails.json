@@ -1,0 +1,13 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "Simple_communication_server",
+  "outputfilename": "Simple_communication_server",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "milkcandy",
+    "email": "milkcandyxxxx@gmail.com"
+  }
+}
