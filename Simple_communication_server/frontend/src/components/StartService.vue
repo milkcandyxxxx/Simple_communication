@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { Start, Stop } from '../../wailsjs/go/main/App'
 
 // 全局状态存储（切换页面不丢失）
@@ -15,6 +15,7 @@ const isStarted = ref(window.serviceState.isStarted)
 const serviceName = ref(window.serviceState.serviceName)
 const resultText = ref(window.serviceState.resultText)
 const isLoading = ref(false)
+const connectionStatus = ref('未连接')
 
 function handleStart() {
   isLoading.value = true
@@ -47,6 +48,7 @@ function handleStop() {
     if (result === 0) {
       isStarted.value = false
       resultText.value = '⛔ WebSocket 服务已关闭'
+      connectionStatus.value = '未连接'
       
       // 更新全局状态
       window.serviceState.isStarted = false
@@ -65,6 +67,24 @@ onMounted(() => {
   isStarted.value = window.serviceState.isStarted
   serviceName.value = window.serviceState.serviceName
   resultText.value = window.serviceState.resultText
+  
+  // 监听全局聊天日志更新事件，显示连接状态
+  const handleChatLogUpdate = (event) => {
+    console.log('🚀 StartService 收到更新：', event.detail)
+    if (isStarted.value) {
+      connectionStatus.value = '已连接'
+    }
+  }
+  
+  window.addEventListener('chatLogUpdate', handleChatLogUpdate)
+  window.handleChatLogUpdateStart = handleChatLogUpdate
+})
+
+onUnmounted(() => {
+  // 移除事件监听
+  if (window.handleChatLogUpdateStart) {
+    window.removeEventListener('chatLogUpdate', window.handleChatLogUpdateStart)
+  }
 })
 </script>
 
@@ -75,6 +95,10 @@ onMounted(() => {
       <div class="status-badge" :class="{ active: isStarted }">
         <span class="status-dot"></span>
         <span>{{ isStarted ? '运行中' : '未启动' }}</span>
+      </div>
+      <div class="status-badge" :class="{ active: connectionStatus === '已连接' }">
+        <span class="status-dot"></span>
+        <span>{{ connectionStatus }}</span>
       </div>
     </div>
 

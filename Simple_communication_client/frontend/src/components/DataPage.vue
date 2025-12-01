@@ -35,7 +35,7 @@ onMounted(() => {
   if (chatLogs.value.length === 0) {
     const initLog = {
       time: new Date().toLocaleString(),
-      message: '控制台已就绪，等待 WebSocket 客户端连接...',
+      message: '控制台已就绪，等待 WebSocket 连接...',
       type: 'system'
     }
     window.chatLogs.push(initLog)
@@ -65,8 +65,8 @@ const clearLogs = () => {
   }
   window.chatLogs.push(clearLog)
   // 触发响应式更新：创建新数组引用
-  chatLogs.value = [...window.chatLogs]
-  scrollToBottom()
+ chatLogs.value = [...window.chatLogs]
+scrollToBottom()
 }
 </script>
 
